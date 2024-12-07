@@ -1,6 +1,9 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"car-rental-app/helpers"
+	"gorm.io/gorm"
+)
 
 type User struct {
 	gorm.Model
@@ -11,4 +14,13 @@ type User struct {
 	Role     string `gorm:"type:varchar(30);not null" json:"role"`
 
 	Bookings []Booking `gorm:"foreignKey:UserID" json:"bookings,omitempty"`
+}
+
+func (u *User) BeforeCreate(tx *gorm.DB) error {
+	var err error
+	u.Password, err = helpers.HashPassword(u.Password)
+	if err != nil {
+		return err
+	}
+	return nil
 }
