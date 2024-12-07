@@ -1,0 +1,48 @@
+[
+    {
+      "id": 1,
+      "name": "Avanza",
+      "brand": "Toyota",
+      "year": "2010",
+      "priceperday": "100.000",
+      "availability": false,
+      "category_id": 3
+    },
+    {
+      "id": 2,
+      "name": "SF90",
+      "brand": "Ferrari",
+      "year": "2020",
+      "priceperday": "1.000.000",
+      "availability": false,
+      "category_id": 4
+    },
+    {
+      "id": 3,
+      "name": "Toyota Model 541",
+      "brand": "Toyota",
+      "year": 2004,
+      "price_per_day": 183.89,
+      "availability": false,
+      "category_id": 3
+  },
+  {
+      "id": 4,
+      "name": "Tesla Model 154",
+      "brand": "Tesla",
+      "year": 2008,
+      "price_per_day": 125.93,
+      "availability": false,
+      "category_id": 1
+  },
+  {
+      "id": 5,
+      "name": "Tesla Model 761",
+      "brand": "Tesla",
+      "year": 2023,
+      "price_per_day": 264.49,
+      "availability": false,
+      "category_id": 2
+  }
+  ]
+  
