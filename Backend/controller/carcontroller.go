@@ -4,9 +4,9 @@ import (
 	"car-rental-app/common"
 	"car-rental-app/dto"
 	"car-rental-app/service"
+	"io/ioutil"
 	"net/http"
 	"strconv"
-	"io/ioutil"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,6 +17,7 @@ type CarController interface {
 	DeleteCar(ctx *gin.Context)
 	UpdateCar(ctx *gin.Context)
 	GetCar(ctx *gin.Context)
+	GetCarImage(ctx *gin.Context)
 }
 
 type carController struct {
@@ -101,8 +102,6 @@ func (c *carController) RegisterCar(ctx *gin.Context) {
 	res := common.BuildResponse(true, "Berhasil Menambah Mobil", car)
 	ctx.JSON(http.StatusOK, res)
 }
-
-
 
 func (c *carController) GetAllCar(ctx *gin.Context) {
 	cars, err := c.carService.GetAllCar(ctx.Request.Context())
@@ -195,7 +194,6 @@ func (c *carController) DeleteCar(ctx *gin.Context) {
 }
 
 func (c *carController) GetCarImage(ctx *gin.Context) {
-	// Ambil ID mobil dari parameter URL
 	carID := ctx.Param("car_id")
 	id, err := strconv.Atoi(carID)
 	if err != nil {
@@ -204,23 +202,19 @@ func (c *carController) GetCarImage(ctx *gin.Context) {
 		return
 	}
 
-	// Ambil data mobil beserta gambar dari database
 	car, err := c.carService.GetCarByID(ctx.Request.Context(), id)
 	if err != nil {
-		res := common.BuildErrorResponse("Mobil tidak ditemukan", err.Error(), common.EmptyObj{})
+		res := common.BuildErrorResponse("Car not found", err.Error(), common.EmptyObj{})
 		ctx.JSON(http.StatusNotFound, res)
 		return
 	}
 
-	// Jika gambar ditemukan, kembalikan sebagai blob
 	if car.Image != nil {
-		// Tentukan jenis konten gambar berdasarkan tipe file (misalnya jpeg atau png)
-		ctx.Header("Content-Type", "image/png") // Sesuaikan dengan jenis gambar yang Anda simpan (JPEG, PNG, dll)
-		ctx.Data(http.StatusOK, "image/png", car.Image) // Mengirim gambar sebagai response
+		ctx.Header("Content-Type", "image/jpeg") // Or image/png depending on the image type
+		ctx.Data(http.StatusOK, "image/jpeg", car.Image)
 		return
 	}
 
-	// Jika gambar tidak ada, kirim respons error
-	res := common.BuildErrorResponse("Gambar tidak ditemukan", "Gambar tidak tersedia", common.EmptyObj{})
+	res := common.BuildErrorResponse("Image not found", "Image not available", common.EmptyObj{})
 	ctx.JSON(http.StatusNotFound, res)
 }
