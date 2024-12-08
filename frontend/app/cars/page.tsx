@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import CarList from '../../components/CarList';
+import CarList from '../../components/cars/CarList';
 import Loader from '../../components/Loader';
 import { fetchCars } from '../../lib/api';
 
