@@ -18,9 +18,9 @@ func Seeder(db *gorm.DB) error {
 		return err
 	}
 
-	if err := seeders.BookingSeeder(db); err != nil {
-		return err
-	}
+	// if err := seeders.BookingSeeder(db); err != nil {
+	// 	return err
+	// }
 
 	return nil
 }

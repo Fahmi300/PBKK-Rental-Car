@@ -1,48 +1,80 @@
 [
-    {
-      "id": 1,
-      "name": "Avanza",
+  {
+      "name": "Corolla",
       "brand": "Toyota",
-      "year": 2010,
-      "priceperday": 100.00,
-      "availability": false,
-      "category_id": 3
-    },
-    {
-      "id": 2,
-      "name": "SF90",
-      "brand": "Ferrari",
-      "year": 2020,
-      "priceperday": 1000000.00,
-      "availability": false,
-      "category_id": 4
-    },
-    {
-      "id": 3,
-      "name": "Toyota Model 541",
-      "brand": "Toyota",
-      "year": 2004,
-      "price_per_day": 183.89,
-      "availability": false,
-      "category_id": 3
+      "year": 2023,
+      "seat": 5,
+      "insurance": true,
+      "fuel": "Gasoline",
+      "luggage": true,
+      "transmission": "Automatic",
+      "price_per_day": 120.0,
+      "availability": true,
+      "category_id": 1
   },
   {
-      "id": 4,
-      "name": "Tesla Model 154",
+      "name": "Model 3",
       "brand": "Tesla",
-      "year": 2008,
-      "price_per_day": 125.93,
+      "year": 2024,
+      "seat": 5,
+      "insurance": false,
+      "fuel": "Electric",
+      "luggage": true,
+      "transmission": "Automatic",
+      "price_per_day": 200.0,
+      "availability": true,
+      "category_id": 2
+  },
+  {
+      "name": "Civic",
+      "brand": "Honda",
+      "year": 2022,
+      "seat": 5,
+      "insurance": true,
+      "fuel": "Gasoline",
+      "luggage": true,
+      "transmission": "Manual",
+      "price_per_day": 100.0,
       "availability": false,
       "category_id": 1
   },
   {
-      "id": 5,
-      "name": "Tesla Model 761",
-      "brand": "Tesla",
+      "name": "Explorer",
+      "brand": "Ford",
+      "year": 2021,
+      "seat": 7,
+      "insurance": true,
+      "fuel": "Gasoline",
+      "luggage": true,
+      "transmission": "Automatic",
+      "price_per_day": 180.0,
+      "availability": true,
+      "category_id": 3
+  },
+  {
+      "name": "X5",
+      "brand": "BMW",
       "year": 2023,
-      "price_per_day": 264.49,
-      "availability": false,
+      "seat": 5,
+      "insurance": true,
+      "fuel": "Diesel",
+      "luggage": true,
+      "transmission": "Automatic",
+      "price_per_day": 220.0,
+      "availability": true,
       "category_id": 2
+  },
+  {
+      "name": "A3",
+      "brand": "Audi",
+      "year": 2022,
+      "seat": 4,
+      "insurance": true,
+      "fuel": "Gasoline",
+      "luggage": false,
+      "transmission": "Automatic",
+      "price_per_day": 130.0,
+      "availability": true,
+      "category_id": 1
   }
-  ]
-  
+]

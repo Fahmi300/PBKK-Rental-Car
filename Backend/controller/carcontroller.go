@@ -85,15 +85,24 @@ func (c *carController) GetAllCar(ctx *gin.Context) {
 }
 
 func (c *carController) GetCar(ctx *gin.Context) {
+	// Get car ID from URL parameter
 	carID := ctx.Param("car_id")
 	id, err := strconv.Atoi(carID)
-	car, err := c.carService.GetCarByID(ctx.Request.Context(), id)
+	if err != nil {
+		res := common.BuildErrorResponse("Invalid car ID", err.Error(), common.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, res)
+		return
+	}
+
+	// Fetch the car with the associated category using Preload
+	car, err := c.carService.GetCarWithCategory(ctx.Request.Context(), id)
 	if err != nil {
 		res := common.BuildErrorResponse("Gagal Menerima Mobil", err.Error(), common.EmptyObj{})
 		ctx.JSON(http.StatusNotFound, res)
 		return
 	}
 
+	// Return the response
 	res := common.BuildResponse(true, "Berhasil Menerima Mobil", car)
 	ctx.JSON(http.StatusOK, res)
 }

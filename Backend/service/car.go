@@ -6,6 +6,8 @@ import (
 	"car-rental-app/repository"
 	"context"
 
+	"gorm.io/gorm"
+
 	"github.com/mashingan/smapping"
 )
 
@@ -16,9 +18,11 @@ type CarService interface {
 	DeleteCar(ctx context.Context, carID int) error
 	UpdateCar(ctx context.Context, carDTO dto.CarUpdateDto) error
 	CheckCar(ctx context.Context, carName string) (bool, error)
+	GetCarWithCategory(ctx context.Context, carID int) (*models.Car, error)
 }
 
 type carService struct {
+	db            *gorm.DB
 	carRepository repository.CarRepository
 }
 
@@ -65,7 +69,21 @@ func (cs *carService) CheckCar(ctx context.Context, carName string) (bool, error
 	}
 
 	if result.Name != "" {
-		return false,nil
+		return false, nil
 	}
 	return true, nil
+}
+
+// In your service layer:
+func (cs *carService) GetCarWithCategory(ctx context.Context, carID int) (*models.Car, error) {
+	var car models.Car
+
+	// Preload the Category and get the car by ID
+	err := cs.db.Preload("Category").First(&car, carID).Error
+	if err != nil {
+		return nil, err
+	}
+
+	// Return the car along with the associated category
+	return &car, nil
 }

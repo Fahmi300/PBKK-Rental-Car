@@ -36,7 +36,7 @@ func (db *carConnection) RegisterCar(ctx context.Context, car models.Car) (model
 
 func (db *carConnection) GetAllCar(ctx context.Context) ([]models.Car, error) {
 	var cars []models.Car
-	tx := db.connection.Find(&cars)
+	tx := db.connection.Preload("Category").Find(&cars) // Preload Category
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
@@ -45,7 +45,7 @@ func (db *carConnection) GetAllCar(ctx context.Context) ([]models.Car, error) {
 
 func (db *carConnection) FindCarByID(ctx context.Context, carID int) (models.Car, error) {
 	var car models.Car
-	tx := db.connection.Where("id = ?", carID).Take(&car)
+	tx := db.connection.Preload("Category").Where("id = ?", carID).Take(&car) // Preload Category
 	if tx.Error != nil {
 		return car, tx.Error
 	}

@@ -3,7 +3,9 @@
         "id": 1,
         "start_date": "2024-12-24T09:25:49Z",
         "end_date": "2024-12-27T09:25:49Z",
-        "total_price": 153.87,
+        "description": "Vacation rental",
+        "location": "New York",
+        "need": "For Personal",
         "user_id": 2,
         "car_id": 1
     },
@@ -11,7 +13,9 @@
         "id": 2,
         "start_date": "2025-01-02T09:25:49Z",
         "end_date": "2025-01-09T09:25:49Z",
-        "total_price": 727.7,
+        "description": "Business trip",
+        "location": "Los Angeles",
+        "need": "For Business",
         "user_id": 4,
         "car_id": 2
     },
@@ -19,7 +23,9 @@
         "id": 3,
         "start_date": "2025-01-02T09:25:49Z",
         "end_date": "2025-01-09T09:25:49Z",
-        "total_price": 880,
+        "description": "Family outing",
+        "location": "Miami",
+        "need": "For Personal",
         "user_id": 1,
         "car_id": 3
     },
@@ -27,7 +33,9 @@
         "id": 4,
         "start_date": "2025-01-02T09:25:49Z",
         "end_date": "2025-01-09T09:25:49Z",
-        "total_price": 900,
+        "description": "Road trip",
+        "location": "San Francisco",
+        "need": "For Business",
         "user_id": 3,
         "car_id": 5
     }

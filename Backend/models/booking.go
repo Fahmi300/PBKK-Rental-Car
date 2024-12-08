@@ -12,9 +12,13 @@ type Booking struct {
 	StartDate  time.Time `json:"start_date"`
 	EndDate    time.Time `json:"end_date"`
 	TotalPrice float64   `json:"total_price"`
+	Description	string    `json:"description"`
+	Location    string	  `json:"location"`
+	Need		string    `json:"need"`
+	Phone		string    `json:"phone"`
 
 	UserID     int      `json:"user_id"`
-	User	   int		`json:"user,omitempty"`
+	User	   User		`json:"user,omitempty"`
 	CarID      int      `json:"car_id"`
-	Car	   	   int		`json:"car,omitempty"`
+	Car	   	   Car		`json:"car,omitempty"`
 }

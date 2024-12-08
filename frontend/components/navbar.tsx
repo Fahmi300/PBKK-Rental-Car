@@ -15,7 +15,7 @@ const Navbar = () => {
           <Link href="/cars" className="text-white hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">
             Cars
           </Link>
-          <Link href="/about" className="text-white hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">
+          <Link href="/userprofile" className="text-white hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">
             Profile
           </Link>
           {/* If you have login/logout functionality */}
