@@ -9,6 +9,7 @@ import (
 	"car-rental-app/service"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 
 	"log"
 )
@@ -49,6 +50,16 @@ func main() {
 
 	// Set up routes
 	r := gin.Default()
+
+	// Add CORS middleware to allow all origins
+	r.Use(cors.New(cors.Config{
+		AllowAllOrigins: true,
+		AllowMethods:    []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:    []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:   []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
+
 	routes.UserRoutes(r, userController, jwtService)
 	routes.CarRoutes(r, carController, jwtService)
 	routes.BookingRoutes(r, bookingController, jwtService)
