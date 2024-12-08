@@ -7,6 +7,7 @@ function CarItem({ car }) {
             <p>Brand: {car.brand}</p>
             <p>Year: {car.year}</p>
             <p>Price per Day: ${car.price_per_day}</p>
+            <p>Image: ${car.image}</p>
         </li>
     );
 }

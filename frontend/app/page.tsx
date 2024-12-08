@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Navbar from "../components/navbar"; // Import Navbar component
+import Navbar from "../components/navbar";
+import { useRouter } from "next/navigation";
 
 interface Car {
   id: number;
@@ -10,6 +11,8 @@ interface Car {
   year: number;
   price_per_day: number;
   availability: boolean;
+  image_blob?: string; // URL or path to the blob
+  imageUrl?: string; // Converted URL for rendering
   category?: {
     id: number;
     name: string;
@@ -20,6 +23,7 @@ const DashboardPage = () => {
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchCars = async () => {
@@ -30,7 +34,31 @@ const DashboardPage = () => {
           throw new Error("Failed to fetch cars");
         }
         const data = await response.json();
-        setCars(data.data); // Assuming `data.data` contains the list of cars
+
+        // Process cars and fetch image blobs
+        const carsWithImages = await Promise.all(
+          data.data.map(async (car: Car) => {
+            console.log("Fetching image for car", car.id);
+            console.log(car.image_blob) // Log the image blob URL
+            if (car.image_blob) {
+              try {
+                const blobResponse = await fetch(car.image_blob); // Fetch the blob
+                if (blobResponse.ok) {
+                  const blob = await blobResponse.blob();
+                  const imageUrl = URL.createObjectURL(blob); // Convert blob to URL
+                  return { ...car, imageUrl }; // Add `imageUrl` for rendering
+                } else {
+                  console.error(`Failed to fetch image for car ID ${car.id}`, blobResponse.statusText);
+                }
+              } catch (error) {
+                console.error(`Error fetching image for car ID ${car.id}:`, error);
+              }
+            }
+            return car;
+          })
+        );
+
+        setCars(carsWithImages);
       } catch (err: any) {
         setError(err.message || "An error occurred");
       } finally {
@@ -40,6 +68,17 @@ const DashboardPage = () => {
 
     fetchCars();
   }, []);
+
+  useEffect(() => {
+    // Cleanup: Revoke object URLs when component unmounts or when `cars` state changes
+    return () => {
+      cars.forEach((car) => {
+        if (car.imageUrl) {
+          URL.revokeObjectURL(car.imageUrl);
+        }
+      });
+    };
+  }, [cars]);
 
   if (loading) {
     return <p className="text-center text-gray-600 mt-10">Loading cars...</p>;
@@ -53,26 +92,31 @@ const DashboardPage = () => {
     );
   }
 
+  const handleRentNow = (carID: number) => {
+    // Redirect to booking page and pass the carID in the URL
+    router.push(`/booking?carID=${carID}`);
+  };
+
   return (
     <div>
-      <Navbar /> {/* Include the Navbar component */}
+      <Navbar />
       <main className="p-6 bg-gray-100 min-h-screen">
-        {/* Header */}
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-800">Available Cars for Rent</h1>
           <p className="text-gray-600 mt-2">
             Browse through our collection of rentable cars. Check availability and book now!
           </p>
         </div>
-
-        {/* Cars Grid */}
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {cars.map((car) => (
-            <div
-              key={car.id}
-              className="bg-white shadow-md rounded-lg overflow-hidden"
-            >
-              {/* Car Details */}
+            <div key={car.id} className="bg-white shadow-md rounded-lg overflow-hidden">
+              {car.imageUrl ? (
+                <img src={car.imageUrl} alt={car.name} className="w-full h-48 object-cover" />
+              ) : (
+                <div className="w-full h-48 bg-gray-300 flex items-center justify-center">
+                  <span className="text-gray-600">No Image Available</span>
+                </div>
+              )}
               <div className="p-4">
                 <h2 className="text-xl font-bold text-gray-800">{car.name}</h2>
                 <p className="text-gray-600 text-sm mt-1">
@@ -82,25 +126,17 @@ const DashboardPage = () => {
                   <strong>Year:</strong> {car.year}
                 </p>
                 <p className="text-gray-600 text-sm mt-1">
-                  <strong>Category:</strong>{" "}
-                  {car.category?.name || "Uncategorized"}
+                  <strong>Category:</strong> {car.category?.name || "Uncategorized"}
                 </p>
-                <p
-                  className={`text-sm font-semibold mt-2 ${
-                    car.availability ? "text-green-600" : "text-red-600"
-                  }`}
-                >
+                <p className={`text-sm font-semibold mt-2 ${car.availability ? "text-green-600" : "text-red-600"}`}>
                   {car.availability ? "Available" : "Not Available"}
                 </p>
                 <p className="text-gray-800 text-lg font-semibold mt-4">
                   ${car.price_per_day.toFixed(2)} / day
                 </p>
                 <button
-                  className={`mt-4 w-full py-2 rounded shadow-md ${
-                    car.availability
-                      ? "bg-blue-600 text-white hover:bg-blue-700"
-                      : "bg-gray-400 text-white cursor-not-allowed"
-                  }`}
+                  className={`mt-4 w-full py-2 rounded shadow-md ${car.availability ? "bg-blue-600 text-white hover:bg-blue-700" : "bg-gray-400 text-white cursor-not-allowed"}`}
+                  onClick={() => car.availability && handleRentNow(car.id)} // Navigate to booking page when clicked
                   disabled={!car.availability}
                 >
                   {car.availability ? "Rent Now" : "Unavailable"}

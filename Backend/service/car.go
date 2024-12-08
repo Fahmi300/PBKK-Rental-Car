@@ -69,7 +69,7 @@ func (cs *carService) CheckCar(ctx context.Context, carName string) (bool, error
 	}
 
 	if result.Name != "" {
-		return false, nil
+		return false, nil	
 	}
 	return true, nil
 }

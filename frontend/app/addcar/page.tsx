@@ -71,7 +71,7 @@ const AddCarPage: React.FC = () => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
-
+  
     const formDataObj = new FormData();
     formDataObj.append("name", formData.name);
     formDataObj.append("brand", formData.brand);
@@ -84,31 +84,34 @@ const AddCarPage: React.FC = () => {
     formDataObj.append("pricePerDay", formData.pricePerDay.toString());
     formDataObj.append("availability", formData.availability.toString());
     formDataObj.append("categoryId", formData.categoryId.toString());
+  
     if (formData.image) {
       formDataObj.append("image", formData.image);
     }
-
+  
+    console.log("Payload dikirim:", Object.fromEntries(formDataObj.entries()));
+  
     try {
       const token = localStorage.getItem("token");
       const response = await fetch("http://localhost:8080/api/car", {
         method: "POST",
         headers: {
-            "Authorization": `Bearer ${token}`, // Add the token here
-          },
+          Authorization: `Bearer ${token}`,
+        },
         body: formDataObj,
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Adding car failed");
       }
-
+  
       const result: AddCarResponse = await response.json();
-
+  
       if (!result.status) {
         throw new Error(result.message || "Adding car failed");
       }
-
+  
       setSuccess("Car added successfully!");
       setFormData({
         name: "",
@@ -124,13 +127,13 @@ const AddCarPage: React.FC = () => {
         categoryId: 1,
         image: null,
       });
-
-      // Optionally redirect or provide feedback
+  
       setTimeout(() => router.push("/cars"), 3000);
     } catch (error) {
       setError((error as Error).message);
     }
   };
+  
 
   return (
     <div style={{ maxWidth: "600px", margin: "50px auto" }}>
@@ -143,7 +146,7 @@ const AddCarPage: React.FC = () => {
             <input
               type="text"
               id="name"
-              name="name"
+              name="name" 
               className="grow"
               value={formData.name}
               placeholder="Car Name"

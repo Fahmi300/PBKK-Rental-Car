@@ -6,6 +6,7 @@ import (
 	"car-rental-app/service"
 	"net/http"
 	"strconv"
+	"io/ioutil"
 
 	"github.com/gin-gonic/gin"
 )
@@ -47,12 +48,41 @@ func (c *carController) RegisterCar(ctx *gin.Context) {
 		return
 	}
 
-	err = ctx.ShouldBind(&carDTO)
-	if err != nil {
-		res := common.BuildErrorResponse("Input Salah", err.Error(), common.EmptyObj{})
+	if err := ctx.Request.ParseMultipartForm(10 << 20); err != nil { // Limit to 10 MB
+		res := common.BuildErrorResponse("Input Salah", "Gagal membaca multipart data", nil)
 		ctx.JSON(http.StatusBadRequest, res)
 		return
 	}
+
+	file, _, err := ctx.Request.FormFile("image")
+	if err != nil {
+		res := common.BuildErrorResponse("Input Salah", "Gagal membaca file gambar", nil)
+		ctx.JSON(http.StatusBadRequest, res)
+		return
+	}
+	defer file.Close()
+
+	// Handle form values
+	carDTO.Name = ctx.PostForm("name")
+	carDTO.Brand = ctx.PostForm("brand")
+	carDTO.Seat, _ = strconv.Atoi(ctx.PostForm("seat"))
+	carDTO.Transmission = ctx.PostForm("transmission")
+	carDTO.Fuel = ctx.PostForm("fuel")
+	carDTO.Luggage, _ = strconv.ParseBool(ctx.PostForm("luggage"))
+	carDTO.Insurance, _ = strconv.ParseBool(ctx.PostForm("insurance"))
+	carDTO.Year, _ = strconv.Atoi(ctx.PostForm("year"))
+	carDTO.PricePerDay, _ = strconv.ParseFloat(ctx.PostForm("pricePerDay"), 64)
+	carDTO.Availability, _ = strconv.ParseBool(ctx.PostForm("availability"))
+	carDTO.CategoryID, _ = strconv.Atoi(ctx.PostForm("categoryId"))
+
+	// Convert file into a byte slice
+	imageData, err := ioutil.ReadAll(file)
+	if err != nil {
+		res := common.BuildErrorResponse("Input Salah", "Gagal membaca isi file", nil)
+		ctx.JSON(http.StatusBadRequest, res)
+		return
+	}
+	carDTO.Image = imageData
 
 	checkCar, _ := c.carService.CheckCar(ctx.Request.Context(), carDTO.Name)
 	if checkCar {
@@ -71,6 +101,8 @@ func (c *carController) RegisterCar(ctx *gin.Context) {
 	res := common.BuildResponse(true, "Berhasil Menambah Mobil", car)
 	ctx.JSON(http.StatusOK, res)
 }
+
+
 
 func (c *carController) GetAllCar(ctx *gin.Context) {
 	cars, err := c.carService.GetAllCar(ctx.Request.Context())
@@ -160,4 +192,35 @@ func (c *carController) DeleteCar(ctx *gin.Context) {
 
 	res := common.BuildResponse(true, "Berhasil Menghapus Mobil", common.EmptyObj{})
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (c *carController) GetCarImage(ctx *gin.Context) {
+	// Ambil ID mobil dari parameter URL
+	carID := ctx.Param("car_id")
+	id, err := strconv.Atoi(carID)
+	if err != nil {
+		res := common.BuildErrorResponse("Invalid car ID", err.Error(), common.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, res)
+		return
+	}
+
+	// Ambil data mobil beserta gambar dari database
+	car, err := c.carService.GetCarByID(ctx.Request.Context(), id)
+	if err != nil {
+		res := common.BuildErrorResponse("Mobil tidak ditemukan", err.Error(), common.EmptyObj{})
+		ctx.JSON(http.StatusNotFound, res)
+		return
+	}
+
+	// Jika gambar ditemukan, kembalikan sebagai blob
+	if car.Image != nil {
+		// Tentukan jenis konten gambar berdasarkan tipe file (misalnya jpeg atau png)
+		ctx.Header("Content-Type", "image/png") // Sesuaikan dengan jenis gambar yang Anda simpan (JPEG, PNG, dll)
+		ctx.Data(http.StatusOK, "image/png", car.Image) // Mengirim gambar sebagai response
+		return
+	}
+
+	// Jika gambar tidak ada, kirim respons error
+	res := common.BuildErrorResponse("Gambar tidak ditemukan", "Gambar tidak tersedia", common.EmptyObj{})
+	ctx.JSON(http.StatusNotFound, res)
 }

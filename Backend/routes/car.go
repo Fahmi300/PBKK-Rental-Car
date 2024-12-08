@@ -16,5 +16,6 @@ func CarRoutes(router *gin.Engine, CarController controller.CarController, jwtSe
 		carRoutes.DELETE("/", middleware.Authenticate(jwtService), CarController.DeleteCar)
 		carRoutes.PUT("/", middleware.Authenticate(jwtService), CarController.UpdateCar)
 		carRoutes.GET("/:car_id", CarController.GetCar)
+
 	}
 }
