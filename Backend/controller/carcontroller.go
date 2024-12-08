@@ -32,20 +32,29 @@ func NewCarController(cs service.CarService, js service.JWTService) CarControlle
 
 func (c *carController) RegisterCar(ctx *gin.Context) {
 	var carDTO dto.CarCreateDto
-	err := ctx.ShouldBind(&carDTO)
+
+	token := ctx.MustGet("token").(string)
+	isAdmin, err := c.jwtService.IsUserAdmin(token)
+	if err != nil {
+		response := common.BuildErrorResponse("Gagal Memproses Request", "Token Tidak Valid", nil)
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, response)
+		return
+	}
+
+	if !isAdmin {
+		response := common.BuildErrorResponse("Akses Ditolak", "Hanya Admin yang Dapat Melakukan Aksi Ini", nil)
+		ctx.JSON(http.StatusForbidden, response)
+		return
+	}
+
+	err = ctx.ShouldBind(&carDTO)
 	if err != nil {
 		res := common.BuildErrorResponse("Input Salah", err.Error(), common.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, res)
 		return
 	}
 
-	checkCar, err := c.carService.CheckCar(ctx.Request.Context(), carDTO.Name)
-	if err != nil {
-		res := common.BuildErrorResponse("Error Saat Mengecek Mobil", err.Error(), common.EmptyObj{})
-		ctx.JSON(http.StatusInternalServerError, res)
-		return
-	}
-
+	checkCar, _ := c.carService.CheckCar(ctx.Request.Context(), carDTO.Name)
 	if checkCar {
 		res := common.BuildErrorResponse("Mobil Sudah Ada", "Nama Sama", common.EmptyObj{})
 		ctx.JSON(http.StatusConflict, res)
@@ -77,7 +86,8 @@ func (c *carController) GetAllCar(ctx *gin.Context) {
 
 func (c *carController) GetCar(ctx *gin.Context) {
 	carID := ctx.Param("car_id")
-	car, err := c.carService.GetCarByID(ctx.Request.Context(), carID)
+	id, err := strconv.Atoi(carID)
+	car, err := c.carService.GetCarByID(ctx.Request.Context(), id)
 	if err != nil {
 		res := common.BuildErrorResponse("Gagal Menerima Mobil", err.Error(), common.EmptyObj{})
 		ctx.JSON(http.StatusNotFound, res)
@@ -90,7 +100,22 @@ func (c *carController) GetCar(ctx *gin.Context) {
 
 func (c *carController) UpdateCar(ctx *gin.Context) {
 	var carDTO dto.CarUpdateDto
-	err := ctx.ShouldBind(&carDTO)
+
+	token := ctx.MustGet("token").(string)
+	isAdmin, err := c.jwtService.IsUserAdmin(token)
+	if err != nil {
+		response := common.BuildErrorResponse("Gagal Memproses Request", "Token Tidak Valid", nil)
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, response)
+		return
+	}
+
+	if !isAdmin {
+		response := common.BuildErrorResponse("Akses Ditolak", "Hanya Admin yang Dapat Melakukan Aksi Ini", nil)
+		ctx.JSON(http.StatusForbidden, response)
+		return
+	}
+
+	err = ctx.ShouldBind(&carDTO)
 	if err != nil {
 		res := common.BuildErrorResponse("Input Salah", err.Error(), common.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, res)
@@ -117,7 +142,7 @@ func (c *carController) DeleteCar(ctx *gin.Context) {
 		return
 	}
 
-	err = c.carService.DeleteCar(ctx.Request.Context(), strconv.Itoa(id))
+	err = c.carService.DeleteCar(ctx.Request.Context(), id)
 	if err != nil {
 		res := common.BuildErrorResponse("Gagal Menghapus Mobil", err.Error(), common.EmptyObj{})
 		ctx.JSON(http.StatusInternalServerError, res)

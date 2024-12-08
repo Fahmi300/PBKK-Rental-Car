@@ -1,22 +1,54 @@
 [
     {
       "id": 1,
-      "name": "Sedan",
-      "cars": "1"
+      "name": "Sedan"
     },
     {
       "id": 2,
-      "name": "SUV",
-      "cars": "2"
+      "name": "SUV"
     },
     {
       "id": 3,
-      "name": "MPV",
-      "cars": "3"
+      "name": "MPV"
     },
     {
       "id": 4,
-      "name": "Hatchback",
-      "cars": "4"
+      "name": "Hatchback"
+    },
+    {
+      "id": 5,
+      "name": "Wagon"
+    },
+    {
+      "id": 6,
+      "name": "Coupe"
+    },
+    {
+      "id": 7,
+      "name": "Convertible"
+    },
+    {
+      "id": 8,
+      "name": "Sport"
+    },
+    {
+      "id": 9,
+      "name": "Supercar"
+    },
+    {
+      "id": 10,
+      "name": "Hypercar"
+    },
+    {
+      "id": 11,
+      "name": "Crossover"
+    },
+    {
+      "id": 12,
+      "name": "Pickup"
+    },
+    {
+      "id": 13,
+      "name": "LCGC"
     }
   ]

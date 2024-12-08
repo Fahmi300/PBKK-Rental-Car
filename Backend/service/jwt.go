@@ -13,6 +13,7 @@ type JWTService interface {
 	GenerateToken(userID int, role string) string
 	ValidateToken(token string) (*jwt.Token, error)
 	GetUserIDByToken(token string) (int, error)
+	IsUserAdmin(token string) (bool, error)
 }
 
 type jwtCustomClaim struct {
@@ -77,3 +78,18 @@ func (j *jwtService) GetUserIDByToken(token string) (int, error) {
 	id := int(claims["user_id"].(float64)) // Convert to int
 	return id, nil
 }
+
+func (j *jwtService) IsUserAdmin(token string) (bool, error) {
+	t_Token, err := j.ValidateToken(token)
+	if err != nil {
+		return false, err
+	}
+
+	// Ambil klaim dan periksa role
+	claims := t_Token.Claims.(jwt.MapClaims)
+	role := claims["role"].(string)
+
+	// Kembalikan true jika role adalah admin, jika tidak kembalikan false
+	return role == "admin", nil
+}
+

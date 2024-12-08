@@ -12,8 +12,8 @@ import (
 type CarService interface {
 	RegisterCar(ctx context.Context, carDTO dto.CarCreateDto) (models.Car, error)
 	GetAllCar(ctx context.Context) ([]models.Car, error)
-	GetCarByID(ctx context.Context, carID string) (models.Car, error)
-	DeleteCar(ctx context.Context, carID string) error
+	GetCarByID(ctx context.Context, carID int) (models.Car, error)
+	DeleteCar(ctx context.Context, carID int) error
 	UpdateCar(ctx context.Context, carDTO dto.CarUpdateDto) error
 	CheckCar(ctx context.Context, carName string) (bool, error)
 }
@@ -41,11 +41,11 @@ func (cs *carService) GetAllCar(ctx context.Context) ([]models.Car, error) {
 	return cs.carRepository.GetAllCar(ctx)
 }
 
-func (cs *carService) GetCarByID(ctx context.Context, carID string) (models.Car, error) {
+func (cs *carService) GetCarByID(ctx context.Context, carID int) (models.Car, error) {
 	return cs.carRepository.FindCarByID(ctx, carID)
 }
 
-func (cs *carService) DeleteCar(ctx context.Context, carID string) error {
+func (cs *carService) DeleteCar(ctx context.Context, carID int) error {
 	return cs.carRepository.DeleteCar(ctx, carID)
 }
 
@@ -59,9 +59,13 @@ func (cs *carService) UpdateCar(ctx context.Context, carDTO dto.CarUpdateDto) er
 }
 
 func (cs *carService) CheckCar(ctx context.Context, carName string) (bool, error) {
-	car, err := cs.carRepository.FindCarByName(ctx, carName)
+	result, err := cs.carRepository.FindCarByName(ctx, carName)
 	if err != nil {
 		return false, err
 	}
-	return car.Name != "", nil
+
+	if result.Name != "" {
+		return false,nil
+	}
+	return true, nil
 }

@@ -10,9 +10,9 @@ import (
 type CarRepository interface {
 	RegisterCar(ctx context.Context, car models.Car) (models.Car, error)
 	GetAllCar(ctx context.Context) ([]models.Car, error)
-	FindCarByID(ctx context.Context, carID string) (models.Car, error)
+	FindCarByID(ctx context.Context, carID int) (models.Car, error)
 	FindCarByName(ctx context.Context, carName string) (models.Car, error)
-	DeleteCar(ctx context.Context, carID string) error
+	DeleteCar(ctx context.Context, carID int) error
 	UpdateCar(ctx context.Context, car models.Car) error
 }
 
@@ -43,7 +43,7 @@ func (db *carConnection) GetAllCar(ctx context.Context) ([]models.Car, error) {
 	return cars, nil
 }
 
-func (db *carConnection) FindCarByID(ctx context.Context, carID string) (models.Car, error) {
+func (db *carConnection) FindCarByID(ctx context.Context, carID int) (models.Car, error) {
 	var car models.Car
 	tx := db.connection.Where("id = ?", carID).Take(&car)
 	if tx.Error != nil {
@@ -61,7 +61,7 @@ func (db *carConnection) FindCarByName(ctx context.Context, carName string) (mod
 	return car, nil
 }
 
-func (db *carConnection) DeleteCar(ctx context.Context, carID string) error {
+func (db *carConnection) DeleteCar(ctx context.Context, carID int) error {
 	tx := db.connection.Delete(&models.Car{}, carID)
 	if tx.Error != nil {
 		return tx.Error

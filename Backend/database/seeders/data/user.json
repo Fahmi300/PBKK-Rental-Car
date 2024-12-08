@@ -15,16 +15,16 @@
   },
   {
     "id": 3,
-    "name": "User_2",
+    "name": "User_3",
     "email": "jevon@gmail.com",
     "password": "password789",
     "role": "user"
   },
   {
     "id": 4,
-    "name": "User_2",
+    "name": "win",
     "email": "winston@gmail.com",
     "password": "pass123",
-    "role": "user"
+    "role": "admin"
   }
 ]

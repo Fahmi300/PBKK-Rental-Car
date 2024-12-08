@@ -3,8 +3,8 @@
       "id": 1,
       "name": "Avanza",
       "brand": "Toyota",
-      "year": "2010",
-      "priceperday": "100.000",
+      "year": 2010,
+      "priceperday": 100.00,
       "availability": false,
       "category_id": 3
     },
@@ -12,8 +12,8 @@
       "id": 2,
       "name": "SF90",
       "brand": "Ferrari",
-      "year": "2020",
-      "priceperday": "1.000.000",
+      "year": 2020,
+      "priceperday": 1000000.00,
       "availability": false,
       "category_id": 4
     },

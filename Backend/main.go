@@ -25,17 +25,17 @@ func main() {
 		userService    service.UserService       = service.NewUserService(userRepository)
 		userController controller.UserController = controller.NewUserController(userService, jwtService)
 
+		categoryRepository 	repository.CategoryRepository 	= repository.NewCategoryRepository(db)
+		categoryService 	service.CategoryService 		= service.NewCategoryService(categoryRepository)
+		categoryController	 controller.CategoryController	= controller.NewCategoryController(categoryService,  jwtService)
+
 		carRepository repository.CarRepository = repository.NewCarRepository(db)
 		carService    service.CarService       = service.NewCarService(carRepository)
 		carController controller.CarController = controller.NewCarController(carService, jwtService)
 
-		//bookingRepository	repository.bookingRepository= repository.NewBookingRepository(db)
-		//bookingService		service.BookingService		= service.NewBookingRepository(bookingRepository)
-		//bookingController controller.BookingController = controller.NewBookingController(bookingService, jwtService)
-
-		// categoryRepository repository.CategoryRepository = repository.NewCategoryRepository(db)
-		// categoryService service.CategoryService = service.NewCategoryService(carRepository)
-		// categoryController controller.CategoryService = controller.NewCategoryController(carService, jwtService)
+		bookingRepository	repository.BookingRepository	= repository.NewBookingRepository(db)
+		bookingService		service.BookingService			= service.NewBookingService(bookingRepository, carRepository)
+		bookingController 	controller.BookingController 	= controller.NewBookingController(bookingService, jwtService)
 
 	)
 
@@ -51,8 +51,8 @@ func main() {
 	r := gin.Default()
 	routes.UserRoutes(r, userController, jwtService)
 	routes.CarRoutes(r, carController, jwtService)
-	// routes.BookingRoutes(r, bookingController, jwtService)
-	// routes.CategoryRoutes(r, categoryController, jwtService)
+	routes.BookingRoutes(r, bookingController, jwtService)
+	routes.CategoryRoutes(r, categoryController, jwtService)
 
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{"message": "Welcome to Car Rental App!"})
