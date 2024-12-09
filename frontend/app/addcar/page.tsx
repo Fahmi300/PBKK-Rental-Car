@@ -61,11 +61,36 @@ const AddCarPage: React.FC = () => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
-    setFormData((prev) => ({
-      ...prev,
-      image: file,
-    }));
+    
+    if (file) {
+      // Validasi tipe file
+      if (file.type !== "image/jpeg") {
+        setError("Only .png files are allowed.");
+        setFormData((prev) => ({
+          ...prev,
+          image: null,
+        }));
+        return;
+      }
+  
+      // Validasi ukuran file (maksimal 2 MB)
+      if (file.size > 2 * 1024 * 1024) {
+        setError("File size must be less than 2 MB.");
+        setFormData((prev) => ({
+          ...prev,
+          image: null,
+        }));
+        return;
+      }
+  
+      setFormData((prev) => ({
+        ...prev,
+        image: file,
+      }));
+      setError(null); // Reset error jika validasi berhasil
+    }
   };
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

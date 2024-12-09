@@ -11,7 +11,6 @@ interface Car {
   year: number;
   price_per_day: number;
   availability: boolean;
-  image_blob?: string; // URL or path to the blob
   imageUrl?: string; // Converted URL for rendering
   category?: {
     id: number;
@@ -38,23 +37,8 @@ const DashboardPage = () => {
         // Process cars and fetch image blobs
         const carsWithImages = await Promise.all(
           data.data.map(async (car: Car) => {
-            console.log("Fetching image for car", car.id);
-            console.log(car.image_blob) // Log the image blob URL
-            if (car.image_blob) {
-              try {
-                const blobResponse = await fetch(car.image_blob); // Fetch the blob
-                if (blobResponse.ok) {
-                  const blob = await blobResponse.blob();
-                  const imageUrl = URL.createObjectURL(blob); // Convert blob to URL
-                  return { ...car, imageUrl }; // Add `imageUrl` for rendering
-                } else {
-                  console.error(`Failed to fetch image for car ID ${car.id}`, blobResponse.statusText);
-                }
-              } catch (error) {
-                console.error(`Error fetching image for car ID ${car.id}:`, error);
-              }
-            }
-            return car;
+            const imageUrl = `http://localhost:8080/api/car/${car.id}/image`; // Set the URL for the image
+            return { ...car, imageUrl }; // Add `imageUrl` for rendering
           })
         );
 
@@ -92,6 +76,7 @@ const DashboardPage = () => {
     );
   }
 
+  console.log(cars)
   const handleRentNow = (carID: number) => {
     // Redirect to booking page and pass the carID in the URL
     router.push(`/booking?carID=${carID}`);

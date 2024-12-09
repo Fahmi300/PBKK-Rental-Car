@@ -63,7 +63,7 @@ const BookingPage = () => {
       const result = await response.json();
       setTotalPrice(result.total_price); // Update the total price received from the backend
       alert("Booking created successfully!");
-      router.push(`/booking/${result.data.id}`); // Redirect to booking details page
+      router.push(`/`); // Redirect to booking details page
     } catch (error) {
       console.error("Error creating booking:", error);
       setError("An unexpected error occurred. Please try again.");

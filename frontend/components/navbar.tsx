@@ -22,7 +22,7 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = () => {
-    // Remove token and role from localStorage
+    // Remove token and role from localStor age
     localStorage.removeItem("token");
     localStorage.removeItem("role");
 
@@ -31,7 +31,7 @@ const Navbar = () => {
     setIsAdmin(false);
 
     // Redirect to the login page
-    router.push("/");
+    router.push("/login");
   };
 
   return (
